@@ -69,3 +69,25 @@ export default function Hardball() {
     </div>
   );
 }
+
+
+// ─── LIVE TICKER ─────────────────────────────────────────────────────────────
+// Scrolling marquee of cap figures across the top of the app. Pure CSS
+// animation; the strip duplicates itself so the loop is seamless.
+
+const TICKER = Object.entries(TEAM_DATA).flatMap(([abbr, t]) => [
+  `${abbr} $${t.payroll.toFixed(1)}M`,
+]);
+
+export function Ticker() {
+  return (
+    <div className="ticker">
+      <span className="label">LIVE TICKER</span>
+      <div className="ticker-track">
+        {[...TICKER, ...TICKER].map((s, i) => (
+          <span key={i} className="ticker-item">{s}</span>
+        ))}
+      </div>
+    </div>
+  );
+}
