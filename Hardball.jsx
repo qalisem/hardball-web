@@ -91,3 +91,58 @@ export function Ticker() {
     </div>
   );
 }
+
+
+// ─── TEAM DRAWER ─────────────────────────────────────────────────────────────
+// Slide-in side panel with the full roster, contract notes, and a
+// cap-position visualizer (horizontal bar with threshold markers).
+
+const THRESHOLDS = { cap: 154.6, tax: 187.9, apron1: 195.9, apron2: 207.8 };
+
+export function TeamDrawer({ abbr, onClose }) {
+  const team = TEAM_DATA[abbr];
+  if (!team) return null;
+  // Escape-key dismiss + body scroll lock
+  useEffect(() => {
+    const onKey = e => e.key === 'Escape' && onClose();
+    document.addEventListener('keydown', onKey);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+    };
+  }, [onClose]);
+
+  return (
+    <aside className="drawer">
+      <header>
+        <h2>{abbr} — {team.name}</h2>
+        <button onClick={onClose}>×</button>
+      </header>
+      <CapBar payroll={team.payroll} thresholds={THRESHOLDS} />
+    </aside>
+  );
+}
+
+// Cap-position visualizer — second iteration. The first version was a single
+// bar with vertical marker lines; you had to math out which threshold the
+// team had crossed. This one fills colored segments between thresholds, which
+// makes the apron tiers visceral at a glance.
+export function CapBar({ payroll, thresholds }) {
+  const max = thresholds.apron2 + 15;
+  const seg = (lo, hi, cls) => (
+    <div className={`seg ${cls}`}
+         style={{ left: `${(lo / max) * 100}%`,
+                  width: `${((hi - lo) / max) * 100}%` }} />
+  );
+  return (
+    <div className="capbar" aria-label={`Payroll $${payroll.toFixed(1)}M`}>
+      {seg(0, thresholds.cap,    'under-cap')}
+      {seg(thresholds.cap, thresholds.tax,    'under-tax')}
+      {seg(thresholds.tax, thresholds.apron1, 'under-apron1')}
+      {seg(thresholds.apron1, thresholds.apron2, 'under-apron2')}
+      {seg(thresholds.apron2, max, 'over-apron2')}
+      <div className="payroll-marker" style={{ left: `${(payroll / max) * 100}%` }} />
+    </div>
+  );
+}
