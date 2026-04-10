@@ -146,3 +146,32 @@ export function CapBar({ payroll, thresholds }) {
     </div>
   );
 }
+
+
+// ─── INLINE TEAM-NAME DETECTION ──────────────────────────────────────────────
+// When the AI mentions a team in its response (e.g. "Cleveland is over the
+// second apron at $211.7M"), we want that team name to render as a clickable
+// button that opens the drawer.
+//
+// The tricky bit: the existing markdown pass already split on **bold** spans,
+// so we can't naively split again on team names — that would shred the bold
+// runs. Instead, we walk bold and plain spans separately, and only do the
+// team-name regex split inside plain spans.
+
+const TEAM_NAMES = Object.fromEntries(
+  Object.entries(TEAM_DATA).flatMap(([abbr, t]) => [
+    [t.name, abbr],                        // full name
+    [t.name.split(' ').slice(-1)[0], abbr] // last word (Lakers, Celtics, ...)
+  ])
+);
+
+export function renderInlineTeams(text, onPick) {
+  const pattern = new RegExp(`\\b(${Object.keys(TEAM_NAMES).join('|')})\\b`);
+  const parts = text.split(pattern);
+  return parts.map((p, i) => {
+    const abbr = TEAM_NAMES[p];
+    return abbr
+      ? <button key={i} className="team-pill" onClick={() => onPick(abbr)}>{p}</button>
+      : <React.Fragment key={i}>{p}</React.Fragment>;
+  });
+}
