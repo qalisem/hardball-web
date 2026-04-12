@@ -175,3 +175,34 @@ export function renderInlineTeams(text, onPick) {
       : <React.Fragment key={i}>{p}</React.Fragment>;
   });
 }
+
+
+// ─── STYLE POLISH ────────────────────────────────────────────────────────────
+// Inline style block injected once on mount. Covers:
+//   - drawer slide-in animation (transform: translateX, 220ms ease-out)
+//   - keyboard focus rings on all interactive elements (a11y)
+//   - mobile breakpoints: drawer becomes full-screen below 640px,
+//     ticker font scales down, cap bar reflows under the team header.
+//
+// CSS-in-JS keeps this artifact a single file. Will move into a real CSS
+// module once the project is scaffolded with Vite.
+
+const STYLE = `
+.drawer { transform: translateX(0); transition: transform 220ms ease-out; }
+.drawer[hidden] { transform: translateX(100%); }
+button:focus-visible, input:focus-visible { outline: 2px solid #f5d24a; outline-offset: 2px; }
+@media (max-width: 640px) {
+  .drawer { width: 100vw; }
+  .ticker .ticker-item { font-size: 12px; }
+  .capbar { margin-top: 12px; }
+}
+`;
+
+export function injectStyle() {
+  if (typeof document === 'undefined') return;
+  if (document.getElementById('hardball-style')) return;
+  const el = document.createElement('style');
+  el.id = 'hardball-style';
+  el.textContent = STYLE;
+  document.head.appendChild(el);
+}
