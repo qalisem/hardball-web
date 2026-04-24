@@ -2,8 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Send, Activity, X, ChevronRight } from 'lucide-react';
 
 // ─── API base ────────────────────────────────────────────────────────────────
-// Direct call to Anthropic for now; will be migrated to a backend proxy.
-const API_BASE = 'https://api.anthropic.com';
+// Set VITE_API_BASE in .env. Falls back to localhost:5000 for local dev.
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
