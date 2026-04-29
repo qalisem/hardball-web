@@ -1557,7 +1557,8 @@ export default function Hardball() {
 
     useEffect(() => {
         // Fetch team summaries once on mount
-        fetch(`${API_BASE}/api/teams`)
+        // Sprint 4: fetch the full 30-team list from the backend on mount
+      fetch(`${API_BASE}/api/teams`)
             .then((r) => r.json())
             .then(async (data) => {
                 // Hydrate the top 5 teams (by payroll) for ticker
