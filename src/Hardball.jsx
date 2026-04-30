@@ -741,7 +741,7 @@ function EmptyState({ onPickSuggestion, onTeamClick, teamData }) {
             color: COLORS.muted,
           }}
         >
-          <span>2024-25 KEY FIGURES</span>
+          <span>2025-26 KEY FIGURES</span>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
             <span style={{ display: 'inline-flex', alignItems: 'flex-end', gap: 1, height: 8 }}>
               {[2, 5, 3, 7, 4, 6].map((h, i) => (
